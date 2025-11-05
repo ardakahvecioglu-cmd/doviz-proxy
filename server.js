@@ -5,24 +5,32 @@ import cors from "cors";
 const app = express();
 app.use(cors());
 
+// Altın fiyatı (Genelpara)
 app.get("/altin", async (req, res) => {
   try {
-    const r = await fetch("https://finans.truncgil.com/v3/today.json");
-    const d = await r.json();
-    res.json(d);
-  } catch (e) {
-    res.status(500).json({ error: e.toString() });
+    const r = await fetch("https://api.genelpara.com/embed/altin.json");
+    const data = await r.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Altın verisi alınamadı" });
   }
 });
 
+// Döviz fiyatları (Genelpara)
 app.get("/doviz", async (req, res) => {
   try {
-    const r = await fetch("https://api.exchangerate.host/latest?base=TRY&symbols=USD,EUR,GBP");
-    const d = await r.json();
-    res.json(d);
-  } catch (e) {
-    res.status(500).json({ error: e.toString() });
+    const r = await fetch("https://api.genelpara.com/embed/doviz.json");
+    const data = await r.json();
+    res.json(data);
+  } catch (err) {
+    res.status(500).json({ error: "Döviz verisi alınamadı" });
   }
 });
 
-app.listen(3000, () => console.log("Proxy çalışıyor 🚀"));
+// Ana sayfa
+app.get("/", (req, res) => {
+  res.send("Proxy aktif ✅ /altin ve /doviz uçları çalışıyor");
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Server ${PORT} portunda çalışıyor...`));
